@@ -20,6 +20,13 @@ public class ChamadoController {
      Chamado receber(@RequestBody Chamado chamado){
         return service.salvar(chamado);
     }
+
+    @GetMapping("/{id}")
+    public Chamado buscarPorId(@PathVariable Long id){
+        return service.buscar(id);
+    }
+
+
     @GetMapping
     public List<Chamado> listar(){
         return service.listar();

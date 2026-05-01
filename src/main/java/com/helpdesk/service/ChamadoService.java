@@ -24,8 +24,14 @@ public class ChamadoService {
         return repository.save(chamado);
     }
 
+
     public List<Chamado> listar() {
         return repository.findAll();
+    }
+
+    public Chamado buscar(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Chamado não encontrado"));
     }
 
 }
