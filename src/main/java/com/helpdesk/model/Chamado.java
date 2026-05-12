@@ -18,7 +18,8 @@ public class Chamado {
 
     private String titulo;
     private String descricao;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusChamado status;
     private LocalDateTime dataCriacao;
 
 
