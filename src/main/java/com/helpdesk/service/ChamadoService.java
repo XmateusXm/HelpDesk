@@ -1,9 +1,13 @@
 package com.helpdesk.service;
 
+import com.helpdesk.DTO.ChamadoDTO;
+import com.helpdesk.DTO.ChamadoResponseDTO;
+import com.helpdesk.DTO.ChamadoUpdateDTO;
+import com.helpdesk.excepions.ChamadoNaoEncontradoException;
 import com.helpdesk.model.Chamado;
+import com.helpdesk.model.StatusChamado;
 import com.helpdesk.repository.ChamadoRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import java.util.List;
@@ -17,21 +21,48 @@ public class ChamadoService {
         this.repository = repository;
     }
 
-    public Chamado salvar(Chamado chamado) {
-        chamado.setStatus("ABERTO");
+    public ChamadoResponseDTO salvar(ChamadoDTO dto) {
+
+        Chamado chamado = new Chamado(); // variável com nome limpo
+
+        chamado.setTitulo(dto.getTitulo());
+        chamado.setDescricao(dto.getDescricao());
+        chamado.setStatus(StatusChamado.ABERTO);
         chamado.setDataCriacao(java.time.LocalDateTime.now());
 
-        return repository.save(chamado);
+        Chamado salvo = repository.save(chamado);
+        return new ChamadoResponseDTO(salvo);
     }
 
 
-    public List<Chamado> listar() {
-        return repository.findAll();
+    public List<ChamadoResponseDTO> listar() {
+        return repository.findAll()
+                .stream()
+                .map(chamado -> new ChamadoResponseDTO(chamado))
+                .toList();
     }
 
-    public Chamado buscar(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Chamado não encontrado"));
+    public ChamadoResponseDTO buscar(Long id) {
+        Chamado chamado = repository.findById(id)
+                .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
+        return new ChamadoResponseDTO(chamado);
     }
 
+
+    public ChamadoResponseDTO atualizar(Long id, ChamadoUpdateDTO dadosNovos) {
+        Chamado chamadoExistente = repository.findById(id)
+                .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
+        chamadoExistente.setTitulo(dadosNovos.getTitulo());
+        chamadoExistente.setDescricao(dadosNovos.getDescricao());
+        chamadoExistente.setStatus(dadosNovos.getStatus());
+        Chamado salvo = repository.save(chamadoExistente);
+        return new ChamadoResponseDTO(salvo);
+    }
+
+     public void deletar(Long id){
+        repository.findById(id)
+                .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
+         repository.deleteById(id);
+
+     }
 }
