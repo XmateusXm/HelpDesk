@@ -23,7 +23,7 @@ public class ChamadoService {
 
     public ChamadoResponseDTO salvar(ChamadoDTO dto) {
 
-        Chamado chamado = new Chamado(); // variável com nome limpo
+        Chamado chamado = new Chamado();
 
         chamado.setTitulo(dto.getTitulo());
         chamado.setDescricao(dto.getDescricao());
@@ -34,18 +34,19 @@ public class ChamadoService {
         return new ChamadoResponseDTO(salvo);
     }
 
+    public ChamadoResponseDTO buscar(Long id) {
+        Chamado chamado = repository.findById(id)
+                .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
+        return new ChamadoResponseDTO(chamado);
+    }
+
+
 
     public List<ChamadoResponseDTO> listar() {
         return repository.findAll()
                 .stream()
                 .map(chamado -> new ChamadoResponseDTO(chamado))
                 .toList();
-    }
-
-    public ChamadoResponseDTO buscar(Long id) {
-        Chamado chamado = repository.findById(id)
-                .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
-        return new ChamadoResponseDTO(chamado);
     }
 
 
