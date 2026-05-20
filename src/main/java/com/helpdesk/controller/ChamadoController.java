@@ -46,7 +46,7 @@ public class ChamadoController {
       public  ChamadoResponseDTO atualizar(@PathVariable Long id,@RequestBody @Valid ChamadoUpdateDTO chamado) {
       return service.atualizar(id, chamado);
     }
-    @Operation(summary = "Deleta o chamado escolhido")
+    @Operation(summary = "Deleta um chamado")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id){
         service.deletar(id);
